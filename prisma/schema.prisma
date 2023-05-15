@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Superhero {
+  id            Int            @id @default(autoincrement())
+  nom           String
+  adresse       String
+  phoneNumber   String         @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  interventions Intervention[]
+  incidents     Incident[]
+}
+
+model Incident {
+  id            Int            @id @default(autoincrement())
+  type          String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  interventions Intervention[]
+  superheroes   Superhero[]
+}
+
+model Intervention {
+  superheroId Int
+  incidentId  Int
+  adresse     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  superhero   Superhero @relation(fields: [superheroId], references: [id], onDelete: Cascade)
+  incident    Incident  @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@id([superheroId, incidentId])
+}
