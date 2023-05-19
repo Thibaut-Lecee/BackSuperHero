@@ -19,7 +19,7 @@ const incidentTypes = [
 const phoneNumbers = new Set();
 
 // Function to generate a unique phone number
-function generatePhoneNumber() {
+const generatePhoneNumber = () => {
   let phoneNumber;
   do {
     // Generate a 9-digit number and prepend with '+33'
@@ -30,6 +30,13 @@ function generatePhoneNumber() {
   phoneNumbers.add(phoneNumber);
 
   return phoneNumber;
+}
+
+const generateLocation = () => {
+  const latitude = faker.location.latitude({ min: 41.590101, max: 51.148506 });
+  const longitude = faker.location.longitude({ min: -4.65, max: 9.45 });
+
+  return `${latitude}, ${longitude}`;
 }
 
 interface Incident {
@@ -61,7 +68,7 @@ for (let i = 0; i < 50; i++) {
   const superhero = await prisma.superhero.create({
     data: {
       nom: faker.person.firstName(),
-      adresse: `${faker.location.latitude()}, ${faker.location.longitude()}`,
+      adresse: generateLocation(),
       phoneNumber: generatePhoneNumber(),
       incidents: {
         connect: superheroIncidents.map((incident : Incident) => ({ id: incident.id })),
@@ -75,7 +82,7 @@ for (let i = 0; i < 50; i++) {
       data: {
         superheroId: superhero.id,
         incidentId: incident.id,
-        adresse: `${faker.location.latitude()}, ${faker.location.longitude()}`,
+        adresse: generateLocation(),
       },
     });
   }
