@@ -4,12 +4,14 @@ const getAllHeros = async (req, res) => {
   try {
     const allHeros = await prisma.superhero.findMany({
       select: {
+        id: true,
         nom: true,
         adresse: true,
         phoneNumber: true,
         email: true,
         interventions: true,
         incidents: true,
+        svg: true,
       },
     });
     res.status(200).json({
