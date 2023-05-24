@@ -7,7 +7,18 @@ const getAllInterventions = async (req, res) => {
       include: {
         incident: true,
         superhero: true,
-        status: true,
+        status: {
+          select: {
+            status: true,
+            superhero: {
+              select: {
+                nom: true,
+                adresse: true,
+                phoneNumber: true,
+              },
+            },
+          },
+        },
       },
     });
     res.status(200).json({ message: "All interventions", allInterventions });

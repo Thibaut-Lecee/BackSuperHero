@@ -17,15 +17,6 @@ const createSuperHero = async (req, res) => {
     try {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-      const newHero = await prisma.superhero.create({
-        data: {
-          nom: nom,
-          email: email,
-          phoneNumber: phoneNumber,
-          password: hashedPassword,
-          adresse: `${adresse.lat}, ${adresse.lng}`,
-        },
-      });
       if (incidents && incidents.length > 0) {
         const validIncidents = incidents.filter((id) => id !== null);
         if (validIncidents.length > 0) {
@@ -36,12 +27,21 @@ const createSuperHero = async (req, res) => {
               },
             },
           });
-          newHero.incidents = {
-            connect: findIncidents.map((incident) => ({ id: incident.id })),
-          };
+          const newHero = await prisma.superhero.create({
+            data: {
+              nom: nom,
+              email: email,
+              phoneNumber: phoneNumber,
+              password: hashedPassword,
+              adresse: `${adresse.lat}, ${adresse.lng}`,
+              incidents: {
+                connect: findIncidents.map((incident) => ({ id: incident.id })),
+              },
+            },
+          });
+          res.status(200).json({ message: "Hero created", newHero });
         }
       }
-      res.status(200).json({ message: "Hero created", newHero });
     } catch (error) {
       console.log(error);
       res.status(400).json({ message: "Hero not created", error });
