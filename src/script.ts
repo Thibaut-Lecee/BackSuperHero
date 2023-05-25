@@ -14,7 +14,7 @@ const incidentTypes = [
   "Fuite de gaz",
   "Manifestation",
   "Braquage",
-  "Evasion d’un prisonnier",
+  "Evasion d`un prisonnier",
 ];
 
 const incidentStatus = ["En attente", "En cours", "Terminé"];
@@ -86,7 +86,7 @@ async function main() {
       .shuffle(incidents)
       .slice(0, numIncidents);
     const svgPath = `${baseUrl}/assets/Heros/${encodeURIComponent(
-      "IconHero.svg"
+      "IconHero.png"
     )}`;
     const superhero = await prisma.superhero.create({
       data: {

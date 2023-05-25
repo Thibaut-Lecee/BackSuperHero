@@ -22,6 +22,7 @@ app.use("/api/heros", require("./src/Routes/SuperGetRoutes"));
 app.use("/api/heros", require("./src/Routes/SuperPostRoutes"));
 app.use("/api/incidents", require("./src/Routes/IncidentGetRoutes"));
 app.use("/api/interventions", require("./src/Routes/InterventionGetRoutes"));
+app.use("/api/incidents", require("./src/Routes/IncidentPostRoutes"));
 app.listen(port, () => {
   console.log(`Server is listening on port : ${port}`);
 });
