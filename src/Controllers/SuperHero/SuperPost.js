@@ -7,12 +7,21 @@ const createSuperHero = async (req, res) => {
   const { nom, email, phoneNumber, incidents, password, adresse } = req.body;
   const findHero = await prisma.superhero.findFirst({
     where: {
-      nom: nom,
-      email: email,
+      OR: [
+        {
+          nom: nom,
+        },
+        {
+          phoneNumber: phoneNumber,
+        },
+      ],
     },
   });
   if (findHero) {
-    res.status(400).json({ message: "Hero already exists", findHero });
+    console.log(findHero);
+    return res.status(400).json({
+      message: `Nom de super héro ${findHero.nom} ou numéro déjà pris ${findHero.phoneNumber}`,
+    });
   } else {
     try {
       const salt = await bcrypt.genSalt(10);
@@ -39,48 +48,56 @@ const createSuperHero = async (req, res) => {
               },
             },
           });
-          res.status(200).json({ message: "Hero created", newHero });
+          res.status(200).json({ message: "Hero crée", newHero });
         }
       }
     } catch (error) {
       console.log(error);
-      res.status(400).json({ message: "Hero not created", error });
+      res.status(400).json({ message: "Erreur lors de la création" });
     }
   }
 };
 
 const loginSuperHero = async (req, res) => {
   const { nom, password } = req.body;
-
-  const findHero = await prisma.superhero.findFirst({
-    where: {
-      nom: nom,
-    },
-  });
-  if (findHero) {
-    const dehashedPassword = await bcrypt.compare(password, findHero.password);
-    if (dehashedPassword) {
-      const token = jwt.sign(
-        {
-          nom: findHero.nom,
-          adresse: findHero.adresse,
-          phoneNumber: findHero.phoneNumber,
-        },
-        process.env.SECRET_KEY
+  try {
+    const findHero = await prisma.superhero.findFirst({
+      where: {
+        nom: nom,
+      },
+    });
+    if (findHero) {
+      const dehashedPassword = await bcrypt.compare(
+        password,
+        findHero.password
       );
+      if (dehashedPassword) {
+        const token = jwt.sign(
+          {
+            nom: findHero.nom,
+            adresse: findHero.adresse,
+            phoneNumber: findHero.phoneNumber,
+          },
+          process.env.SECRET_KEY
+        );
 
-      res
-        .cookie("accessToken", token, {
-          httpOnly: true,
-          secure: true,
-        })
-        .status(200)
-        .json({ message: "Hero logged in", token });
+        res
+          .cookie("accessToken", token, {
+            httpOnly: true,
+            secure: true,
+          })
+          .status(200)
+          .json({ message: "Bienvenu héro", token });
+      } else {
+        res.status(400).json({ message: "Mot de passe incorrect" });
+      }
     } else {
-      res.status(400).json({ message: "Hero not logged in" });
+      res.status(404).json({ message: "Aucun héro n'a été trouvé" });
     }
-  } else {
-    res.status(400).json({ message: "Hero not logged in" });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Erreur lors de la connexion" });
   }
 };
+
 module.exports = { createSuperHero, loginSuperHero };
