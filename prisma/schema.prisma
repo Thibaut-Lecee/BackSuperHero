@@ -50,6 +50,6 @@ model StatusIntervention {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   intervention Intervention @relation(fields: [id], references: [id], onDelete: Cascade)
-  superheroId  Int? // add this line
+  superheroId  Int?
   superhero    Superhero?   @relation(fields: [superheroId], references: [id]) // and this line
 }

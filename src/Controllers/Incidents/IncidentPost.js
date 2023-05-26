@@ -28,8 +28,6 @@ const incidentPost = async (req, res) => {
             status: status,
             createdAt: new Date(),
             updatedAt: new Date(),
-            // superheroId: null or a default value,
-            // you need to handle this depending on your business logic
           },
         },
       },

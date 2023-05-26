@@ -18,18 +18,14 @@ const incidentTypes = [
 ];
 
 const incidentStatus = ["En attente", "En cours", "Terminé"];
-// Start from a base phone number
 const phoneNumbers = new Set();
 
-// Function to generate a unique phone number
 const generatePhoneNumber = () => {
   let phoneNumber;
   do {
-    // Generate a 9-digit number and prepend with '+33'
     phoneNumber = `+33${faker.number.int({ min: 600000000, max: 799999999 })}`;
   } while (phoneNumbers.has(phoneNumber));
 
-  // Add the generated number to the set
   phoneNumbers.add(phoneNumber);
 
   return phoneNumber;
@@ -58,7 +54,7 @@ const assignSuperheroToIntervention = (status: string) => {
   if (status === "En attente") {
     return null;
   } else {
-    return faker.number.int({ min: 1, max: 10 }); // assuming you have 10 superheroes
+    return faker.number.int({ min: 1, max: 10 });
   }
 };
 
@@ -145,8 +141,6 @@ async function main() {
 
   console.log("Done seeding database.");
 }
-
-// ...
 
 main()
   .catch((error) => {
