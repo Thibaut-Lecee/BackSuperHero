@@ -11,7 +11,6 @@ const getAllHeros = async (req, res) => {
         email: true,
         interventions: true,
         incidents: true,
-        svg: true,
       },
     });
     res.status(200).json({

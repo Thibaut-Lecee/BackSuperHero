@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const baseUrl = process.env.BASE_URL || "http://localhost:4000";
+
 const prisma = new PrismaClient();
 const createSuperHero = async (req, res) => {
   const { nom, email, phoneNumber, incidents, password, adresse } = req.body;
@@ -36,12 +38,14 @@ const createSuperHero = async (req, res) => {
               },
             },
           });
+          const svgPath = `${baseUrl}/assets/Heros/IconHero.png`;
           const newHero = await prisma.superhero.create({
             data: {
               nom: nom,
               email: email,
               phoneNumber: phoneNumber,
               password: hashedPassword,
+              svg: svgPath,
               adresse: `${adresse.lat}, ${adresse.lng}`,
               incidents: {
                 connect: findIncidents.map((incident) => ({ id: incident.id })),
